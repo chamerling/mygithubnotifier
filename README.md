@@ -1,0 +1,2 @@
+mygithubnotifier
+================
