@@ -25,6 +25,7 @@ import org.eclipse.egit.github.core.RepositoryHook;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
+import play.Logger;
 import play.Play;
 import play.libs.Mail;
 import play.mvc.Before;
@@ -45,8 +46,8 @@ public class Application extends Controller {
 			render(repositories);
 		} catch (Exception e) {
 			flash.error("Error while getting repositories from github, check credentials from configuration files");
-			render();
 		}
+		render();
 	}
 
 	public static void repo(String name) {
@@ -59,8 +60,9 @@ public class Application extends Controller {
 			List<RepositoryHook> hooks = repositoryService.getHooks(repository);
 			render(repository, hooks);
 		} catch (IOException e) {
-			error(e);
+			flash.error(e.getMessage());
 		}
+		index();
 	}
 
 	public static void switchHook(String name, long id) {
@@ -81,6 +83,62 @@ public class Application extends Controller {
 		getPubSubClient().subscribe(target, name, "fork",
 				request.getBase() + "/subscriber/fork");
 		flash.success("Subscribed to %s fork events", name);
+		repo(name);
+	}
+	
+	public static void unsubscribeFromForks(String name) {
+		String org = null;
+		String target = org != null ? org : Play.configuration.getProperty(
+				"github.user").toString();
+
+		getPubSubClient().unsubscribe(target, name, "fork");
+		flash.success("Subscribed to %s fork events", name);
+		repo(name);
+	}
+
+	/**
+	 * Get all the repositories and subcribe to all of them
+	 */
+	public static void subscribeToAllForks() {
+		String org = null;
+		String target = org != null ? org : Play.configuration.getProperty(
+				"github.user").toString();
+
+		// TODO : Do it async...
+		try {
+			RepositoryService repositoryService = new RepositoryService(getClient());
+			PubSubHubbubClient client = getPubSubClient();
+			List<Repository> repositories = repositoryService.getRepositories();
+
+			for (Repository repo : repositories) {
+				Logger.info("Subscribe to %s", repo.getName());
+				client.subscribe(target, repo.getName(), "fork",
+						request.getBase() + "/subscriber/fork");
+			}
+		} catch (Exception e) {
+			flash.error("Error while subscribing : " + e.getMessage());
+		}
+		index();
+	}
+	
+	public static void unsubscribeFromAllForks() {
+		String org = null;
+		String target = org != null ? org : Play.configuration.getProperty(
+				"github.user").toString();
+
+		// TODO : Do it async...
+		try {
+			RepositoryService repositoryService = new RepositoryService(getClient());
+			PubSubHubbubClient client = getPubSubClient();
+			List<Repository> repositories = repositoryService.getRepositories();
+
+			for (Repository repo : repositories) {
+				Logger.info("unsubscribe from forks %s", repo.getName());
+				client.unsubscribe(target, repo.getName(), "fork");
+			}
+		} catch (Exception e) {
+			flash.error("Error while subscribing : " + e.getMessage());
+		}
 		index();
 	}
 
@@ -92,7 +150,17 @@ public class Application extends Controller {
 		getPubSubClient().subscribe(target, name, "watch",
 				request.getBase() + "/subscriber/watch");
 		flash.success("Subscribed to %s watch events", name);
-		index();
+		repo(name);
+	}
+	
+	public static void unsubscribeFromWatchs(String name) {
+		String org = null;
+		String target = org != null ? org : Play.configuration.getProperty(
+				"github.user").toString();
+
+		getPubSubClient().unsubscribe(target, name, "watch");
+		flash.success("Unsubscribed from %s watch events", name);
+		repo(name);
 	}
 
 	private static final GitHubClient getClient() {

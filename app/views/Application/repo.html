@@ -1,8 +1,12 @@
 #{extends 'main.html' /}
 #{set title:'Repo' /}
 
-<h2>${repository.name}</h2>
+<h2><a target="_blank" href="${repository.htmlUrl}">${repository.name}</a>&nbsp;<small>${repository?.description}</small></h2>
 
+<div class="well">
+<h3>Hooks</h3>
+<hr/>
+#{if hooks != null && hooks.size > 0}
 <table>
 	<thead>
 		<th>#</th>
@@ -23,3 +27,19 @@
 		#{/list}
 	</tbody>
 </table>
+#{/if}
+#{else}
+None.
+#{/else}
+</div>
+
+<div class="well">
+<h3>Actions</h3>
+<hr/>
+<div align="center">
+	<a href="@@{Application.subscribeToForks(repository.name)}"	class="btn">Subscribe to Forks</a>&nbsp;
+	<a href="@@{Application.unsubscribeFromForks(repository.name)}"	class="btn danger">Unsubscribe from Forks</a>
+	<a href="@@{Application.subscribeToWatchs(repository.name)}" class="btn">Subscribe to Watchers</a>&nbsp;
+	<a href="@@{Application.unsubscribeFromWatchs(repository.name)}" class="btn danger">Unsubscribe from Watchers</a>&nbsp;
+</div>
+</div>

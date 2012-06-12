@@ -58,4 +58,8 @@ public class PubSubHubbubClient {
 			// TODO
 		}
 	}
+	
+	public void unsubscribe(String user, String repository, String type) {
+		// TODO
+	}
 }

@@ -1,22 +1,19 @@
 #{extends 'main.html' /} #{set title:'Repositories' /}
 
-<table>
-	<thead>
-		<th>Name</th>
-		<th>Forks</th>
-		<th>Watchers</th>
-		<th>Subscribe to</th>
-	</thead>
-	<tbody>
-		#{list repositories, as : 'r'}
-		<tr>
-			<td><b><a href="@@{Application.repo(r.name)}">${r.name}</a></b></td>
-			<td>${r.forks}</td>
-			<td>${r.watchers}</td>
-			<td><a href="@@{Application.subscribeToForks(r.name)}"
-				class="btn">Forks</a>&nbsp;<a
-				href="@@{Application.subscribeToWatchs(r.name)}" class="btn">Watchers</a></td>
-		</tr>
-		#{/list}
-	</tbody>
-</table>
+<h1>Repositories (${repositories.size})</h1>
+#{list repositories, as : 'r'}
+<div class="well">
+<h2><a href="@@{Application.repo(r.name)}">${r.name}</a>&nbsp;<small>${r?.description}</small></h2>
+<a href="${r.gitUrl}">${r.gitUrl}</a>
+<hr/>
+<b># Forks :</b> ${r.forks}
+<br/>
+<b># Watchers :</b> ${r.watchers}
+<br/>
+<div align="right">
+<a href="@@{Application.subscribeToForks(r.name)}"
+				class="btn">Subscribe to Forks</a>&nbsp;<a
+				href="@@{Application.subscribeToWatchs(r.name)}" class="btn">Subscribe to Watchers</a>
+				</div>
+</div>
+#{/list}

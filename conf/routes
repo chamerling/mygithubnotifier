@@ -7,7 +7,12 @@ GET     /                                       Application.index
 GET		/repo/{name}							Application.repo
 GET		/repo/{name}/hook/switch/{id}			Application.switchHook
 GET		/repo/{name}/events/fork/subscribe		Application.subscribeToForks
+GET		/repo/{name}/events/fork/unsubscribe	Application.unsubscribeFromForks
 GET		/repo/{name}/events/watch/subscribe		Application.subscribeToWatchs
+GET		/repo/{name}/events/watch/unsubscribe	Application.unsubscribeFromWatchs
+
+GET		/fork/subscribe/all						Application.subscribeToAllForks
+GET		/fork/unsubscribe/all					Application.unsubscribeFromAllForks
 
 POST	/subscriber/fork						ForkSubscriberService.service
 POST	/subscriber/watch						WatchSubscriberService.service
