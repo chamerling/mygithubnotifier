@@ -60,6 +60,21 @@ public class PubSubHubbubClient {
 	}
 	
 	public void unsubscribe(String user, String repository, String type) {
-		// TODO
-	}
+		WSRequest request = WS
+				.url("https://api.github.com/hub");
+		request.authenticate(username, password);
+		
+		request.setParameter("hub.mode", "unsubscribe");
+		request.setParameter("hub.topic", String.format("https://github.com/%s/%s/events/%s", user, repository, type));
+
+		play.libs.WS.HttpResponse response = request.post();
+		
+		Logger.info("Response status : " + response.getStatus());
+		Logger.info("Response body : " + response.getString());
+		
+		if (response.getStatus() == 204) {
+
+		} else {
+			// TODO
+		}	}
 }
