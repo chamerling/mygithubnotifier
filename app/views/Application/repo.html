@@ -1,0 +1,25 @@
+#{extends 'main.html' /}
+#{set title:'Repo' /}
+
+<h2>${repository.name}</h2>
+
+<table>
+	<thead>
+		<th>#</th>
+		<th>Name</th>
+		<th>Created At</th>
+		<th>Active?</th>
+		<th>Actions</th>
+	</thead>
+	<tbody>
+		#{list hooks, as : 'h'}
+		<tr>
+			<td><b>${h.id}</b></td>
+			<td>${h.name}</td>
+			<td>${h.createdAt}</td>
+			<td>${h.active}</td>
+			<td><a href="@@{Application.switchHook(repository.name, h.id)}" class="btn">#{if h.active}Pause#{/if}#{else}Resume#{/else}</a>&nbsp;</td>
+		</tr>
+		#{/list}
+	</tbody>
+</table>

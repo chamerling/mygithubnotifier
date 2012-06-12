@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Application.index
+GET		/repo/{name}							Application.repo
+GET		/repo/{name}/hook/switch/{id}			Application.switchHook
+GET		/repo/{name}/events/fork/subscribe		Application.subscribeToForks
+GET		/repo/{name}/events/watch/subscribe		Application.subscribeToWatchs
+
+POST	/subscriber/fork						ForkSubscriberService.service
+POST	/subscriber/watch						WatchSubscriberService.service
+
+GET 	/mail									Application.mail
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

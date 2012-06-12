@@ -1,0 +1,8 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> crud
+    - play -> secure
+    - org.eclipse.mylyn.github -> org.eclipse.egit.github.core 1.3.6
+    
