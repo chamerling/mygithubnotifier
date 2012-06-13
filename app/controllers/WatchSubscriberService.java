@@ -36,15 +36,15 @@ public class WatchSubscriberService extends Controller {
 	 * Called by github pubsubhubbub for watch events
 	 */
 	public static void service() {
-		String body = IO.readContentAsString(request.body);
-		if (body == null || body.length() == 0) {
+		String payload = params.get("payload");
+		if (payload == null || payload.length() == 0) {
 	        Logger.error("No payload for watch event");
 			return;
 		}
 		
-		Logger.info(body);
+		Logger.info(payload);
 
-		// TODO : github egit is not completely implemented...
-		MailNotifier.watched(GsonUtils.fromJson(body, WatchPayload.class));
+		// TODO : github egit is not completely implemented (repository is missing)...
+		MailNotifier.watched(GsonUtils.fromJson(payload, WatchPayload.class));
 	}
 }

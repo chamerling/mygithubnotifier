@@ -35,14 +35,14 @@ public class ForkSubscriberService extends Controller {
 	 * Called by github pubsubhubbub for fork events
 	 */
 	public static void service() {
-		String body = IO.readContentAsString(request.body);
-		if (body == null || body.length() == 0) {
+		String payload = params.get("payload");
+		if (payload == null || payload.length() == 0) {
 	        Logger.error("No payload for fork event");
 			return;
 		}
 		
-		Logger.info(body);
+		Logger.info(payload);
 
-		MailNotifier.forked(GsonUtils.fromJson(body, ForkPayload.class));
+		MailNotifier.forked(GsonUtils.fromJson(payload, ForkPayload.class));
 	}
 }
